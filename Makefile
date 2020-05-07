@@ -9,10 +9,11 @@ freeze:
 	pip3 freeze > requirements.txt
 
 lint:
-	black .
+	@echo "Running linter.."
+	@black .
 
 test:
-	python3 -m pytest
+	@python3 -m pytest
 
 serve:
-	python manage.py runserver 127.0.0.1:8001
+	@streamlit run src/app.py
