@@ -14,5 +14,3 @@
 You're ready to go 🚀!
 
 Run `make serve` and visit [localhost](http://127.0.0.1:8001) to start.
-
-## Development
