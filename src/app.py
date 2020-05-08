@@ -7,7 +7,7 @@ from api.velib import get_station_info, get_station_statuses
 
 
 st.title("Velo 🚴🏻‍♂️")
-st.write("Check the availabity of docked bike in your city !")
+st.write("Check the availabity of docked bikes in your city !")
 st.markdown("_(if your city is Paris)_")
 
 
@@ -18,11 +18,19 @@ def get_live_station_information():
     return info.merge(statuses)
 
 
-show_capacity = st.sidebar.checkbox("Show capacity", True)
-show_availability = st.sidebar.checkbox("Show availability", False)
-show_non_availability = st.sidebar.checkbox("Show non-availability", False)
-
 map_data = get_live_station_information()
+
+radius = st.slider("Radius ?", 50, 300, 100)
+indicator = st.sidebar.radio(
+    "Show indicator", ("Capacity", "Docks Availability", "Bikes Availability")
+)
+
+prop = "capacity"
+if indicator == "Docks Availability":
+    prop = "num_docks_available"
+if indicator == "Bikes Availability":
+    prop = "num_bikes_available"
+
 st.pydeck_chart(
     pdk.Deck(
         map_style="mapbox://styles/mapbox/dark-v9",
@@ -30,33 +38,20 @@ st.pydeck_chart(
             latitude=map_data["lat"].mean(),
             longitude=map_data["lon"].mean(),
             zoom=11,
-            pitch=20,
+            pitch=40,
         ),
         layers=[
-            show_capacity
-            and pdk.Layer(
-                "HeatmapLayer",
+            pdk.Layer(
+                "HexagonLayer",
                 data=map_data,
-                opacity=0.1,
+                opacity=0.05,
                 get_position="[lon, lat]",
-                get_weight="capacity",
-            ),
-            show_availability
-            and pdk.Layer(
-                "HeatmapLayer",
-                data=map_data,
-                opacity=0.1,
-                get_position="[lon, lat]",
-                get_weight="num_bikes_available / capacity",
-            ),
-            show_non_availability
-            and pdk.Layer(
-                "HeatmapLayer",
-                data=map_data,
-                opacity=0.1,
-                get_position="[lon, lat]",
-                get_weight="1 - num_bikes_available / capacity",
+                pickable=False,
+                radius=radius,
+                # get_elevation=f"{prop}",
             ),
         ],
-    )
+    ),
 )
+
+map_data

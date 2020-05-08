@@ -38,7 +38,7 @@ def get_station_statuses():
                 # "num_bikes_available_ebike": record["num_bikes_available_types"][
                 #     "ebike"
                 # ],
-                # "num_docks_available": record["num_docks_available"],
+                "num_docks_available": record["num_docks_available"],
                 "last_reported": record["last_reported"],
             }
             for record in records
